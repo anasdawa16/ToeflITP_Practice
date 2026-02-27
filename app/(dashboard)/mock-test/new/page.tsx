@@ -1,15 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTestStore } from "@/lib/stores/testStore";
 import type { Question, Passage } from "@/types/test";
 
-/**
- * /mock-test/new/page.tsx (Client Component)
- * Calls POST /api/mock-test/start, hydrates Zustand store, redirects to test interface.
- */
-export default function NewMockTestPage() {
+function MockTestStarter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const testType = (searchParams.get("type") ?? "full_mock") as "full_mock" | "section_practice";
@@ -88,5 +84,17 @@ export default function NewMockTestPage() {
       </p>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
+  );
+}
+
+export default function NewMockTestPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
+        Preparing test environment...
+      </div>
+    }>
+      <MockTestStarter />
+    </Suspense>
   );
 }
