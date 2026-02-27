@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Netlify Next.js Runtime handles middleware, SSR, API routes automatically.
+# The plugin below is auto-installed by Netlify when it detects Next.js,
+# but declaring it explicitly ensures correct behavior.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

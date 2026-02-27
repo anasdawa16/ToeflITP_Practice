@@ -100,7 +100,7 @@ function InputField({
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
+  const redirectedFrom = searchParams.get("redirectedFrom") ?? "/dashboard";
 
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -116,7 +116,9 @@ function LoginForm() {
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push(redirectedFrom);
+        const destination =
+          !redirectedFrom || redirectedFrom === "/" ? "/dashboard" : redirectedFrom;
+        router.push(destination);
         router.refresh();
       }
     });
