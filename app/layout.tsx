@@ -3,8 +3,13 @@ import {
   Inter,
   JetBrains_Mono,
 } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+// Analytics only active on Vercel — safe-import to avoid Netlify crash
+const Analytics = process.env.VERCEL
+  ? require("@vercel/analytics/react").Analytics
+  : () => null;
+const SpeedInsights = process.env.VERCEL
+  ? require("@vercel/speed-insights/next").SpeedInsights
+  : () => null;
 import { ScrollRevealInit } from "@/components/ui/ScrollRevealInit";
 import "./globals.css";
 

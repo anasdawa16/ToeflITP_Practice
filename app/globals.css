@@ -582,6 +582,16 @@ button, a, [role="button"] {
   --safe-right:  env(safe-area-inset-right, 0px);
 }
 
+/* Dashboard main content — responsive top padding */
+.dashboard-main {
+  padding-top: calc(56px + env(safe-area-inset-top, 0px));
+}
+@media (min-width: 768px) {
+  .dashboard-main {
+    padding-top: var(--topbar-height);
+  }
+}
+
 /* ---------------------------------------------------------
    MOBILE — < 640px
    --------------------------------------------------------- */
