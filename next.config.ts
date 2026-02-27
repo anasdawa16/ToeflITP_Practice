@@ -91,10 +91,14 @@ const nextConfig: NextConfig = {
 
   // ── Experimental ────────────────────────────────────────────
   experimental: {
-    // Optimize CSS loading
-    optimizeCss: true,
-    // Turbopack for faster dev builds (opt-in)
-    // turbo: {},
+    // optimizeCss removed — not stable in Next.js 16 with Turbopack
+  },
+
+  // ── Turbopack config (suppress workspace warning) ────────────
+  turbopack: {
+    // Fix: prevents Next.js picking up C:/Users/nassb/package-lock.json
+    // as the workspace root instead of this project directory
+    root: process.cwd(),
   },
 
   // ── Headers: cache static API responses ─────────────────────

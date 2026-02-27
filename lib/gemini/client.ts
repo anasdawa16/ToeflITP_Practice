@@ -8,11 +8,11 @@ if (!apiKey) {
 
 /**
  * Singleton Gemini client for server-side use only.
- * Model: gemini-1.5-flash (free tier — 15 RPM, 1M TPM, 1500 RPD)
+ * Model: gemini-2.0-flash (free tier — 15 RPM, 1M TPM, 1500 RPD)
  */
 export const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-export const GEMINI_MODEL = "gemini-1.5-flash";
+export const GEMINI_MODEL = "gemini-2.0-flash";
 
 export function getGeminiModel() {
   if (!genAI) throw new Error("Gemini API key not configured");

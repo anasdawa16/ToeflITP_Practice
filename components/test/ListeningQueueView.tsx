@@ -7,15 +7,15 @@ import { AudioPlayer } from "@/components/test/AudioPlayer";
 export interface AudioGroup {
   id: string;
   title: string;
-  audioUrl: string;
+  transcript: string;
   part: "A" | "B" | "C";
   questions: Array<{
     id: string;
     questionText: string;
-    optionA: string;
-    optionB: string;
-    optionC: string;
-    optionD: string;
+    option_a: string;
+    option_b: string;
+    option_c: string;
+    option_d: string;
   }>;
 }
 
@@ -99,8 +99,8 @@ export function ListeningQueueView({
           </span>
           <span style={{
             padding: "2px 10px",
-            backgroundColor: "rgba(30,74,155,0.2)",
-            border: "1px solid rgba(30,74,155,0.3)",
+            backgroundColor: "rgba(124,58,237,0.2)",
+            border: "1px solid rgba(124,58,237,0.3)",
             borderRadius: "var(--radius-full)",
             color: "var(--color-primary-300)",
             fontFamily: "var(--font-ui)", fontSize: "10px", fontWeight: 700,
@@ -110,10 +110,10 @@ export function ListeningQueueView({
         </div>
       </div>
 
-      {/* ── AUDIO PHASE ──────────────────────────────────────── */}
+      {/* ── AUDIO PHASE ─────────────────────────────────────── */}
       <div>
         <AudioPlayer
-          audioUrl={currentGroup.audioUrl}
+          transcript={currentGroup.transcript}
           title={currentGroup.title}
           onEnded={handleAudioEnded}
           onPlay={() => {/* audio started */}}
@@ -171,7 +171,7 @@ export function ListeningQueueView({
                 {/* Options */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {(["A", "B", "C", "D"] as const).map((letter) => {
-                    const text = q[`option${letter}` as keyof typeof q] as string;
+                    const text = q[`option_${letter.toLowerCase()}` as keyof typeof q] as string;
                     const isSelected = selectedAns === letter;
                     return (
                       <button
@@ -181,7 +181,7 @@ export function ListeningQueueView({
                         style={{
                           display: "flex", alignItems: "flex-start", gap: "10px",
                           padding: "12px 14px",
-                          backgroundColor: isSelected ? "rgba(30,74,155,0.2)" : "rgba(255,255,255,0.02)",
+                          backgroundColor: isSelected ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.02)",
                           border: `1.5px solid ${isSelected ? "var(--color-primary-400)" : "var(--color-border)"}`,
                           borderRadius: "var(--radius-md)",
                           cursor: "pointer", textAlign: "left",

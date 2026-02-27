@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { FlameIcon } from "@/components/ui/Icons";
 
 interface CalendarDay {
   date: string;   // YYYY-MM-DD
@@ -84,7 +85,7 @@ export function StreakCalendar({ data, streak }: StreakCalendarProps) {
           border: `1px solid ${streak > 0 ? "rgba(251,191,36,0.3)" : "var(--color-border)"}`,
           borderRadius: "var(--radius-full)",
         }}>
-          <span style={{ fontSize: "18px" }}>{streak > 0 ? "🔥" : "💤"}</span>
+          <span style={{ display: "flex", alignItems: "center" }}>{streak > 0 ? <FlameIcon size={18} style={{ color: "#fbbf24" }} /> : <span style={{ fontSize: "11px", letterSpacing: "0.05em", opacity: 0.4, color: "var(--color-text-muted)" }}>zzz</span>}</span>
           <div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-lg)", fontWeight: 700, color: streak > 0 ? "#fbbf24" : "var(--color-text-muted)", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{streak}</div>
             <div style={{ fontFamily: "var(--font-ui)", fontSize: "10px", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em" }}>day streak</div>

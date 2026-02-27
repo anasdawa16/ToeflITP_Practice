@@ -1,0 +1,31 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+/**
+ * /dashboard route — redirect to main dashboard (root of dashboard group)
+ * The (dashboard) route group renders at /, so we redirect there with auth.
+ */
+export default async function DashboardRedirectPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Check onboarding
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("onboarding_completed")
+    .eq("id", user.id)
+    .single();
+
+  if (profile && !profile.onboarding_completed) {
+    redirect("/onboarding");
+  }
+
+  // Already authenticated → go to practice as the main hub
+  redirect("/practice");
+}

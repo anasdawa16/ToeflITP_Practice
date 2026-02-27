@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTopicBySlug } from "@/lib/data/grammarTopics";
+import { getListeningTopicBySlug } from "@/lib/data/listeningTopics";
 
 interface Props {
   params: Promise<{ topic: string }>;
@@ -89,8 +90,8 @@ function MnemonicBox({ mnemonic }: { mnemonic: string }) {
     <div
       style={{
         padding: "16px 20px",
-        backgroundColor: "rgba(30,74,155,0.12)",
-        border: "1px solid rgba(30,74,155,0.3)",
+        backgroundColor: "rgba(124,58,237,0.08)",
+        border: "1px solid rgba(124,58,237,0.25)",
         borderRadius: "var(--radius-lg)",
         borderLeft: "4px solid var(--color-primary-500)",
       }}
@@ -252,7 +253,7 @@ const SECTION_HEADING = `&mdash;`;
 
 export default async function TopicDetailPage({ params }: Props) {
   const { topic: slug } = await params;
-  const topic = getTopicBySlug(slug);
+  const topic = getTopicBySlug(slug) || getListeningTopicBySlug(slug);
   if (!topic) notFound();
 
   return (
@@ -446,5 +447,7 @@ export default async function TopicDetailPage({ params }: Props) {
 // Generate static paths for all topics
 export async function generateStaticParams() {
   const { grammarTopics } = await import("@/lib/data/grammarTopics");
-  return grammarTopics.map((t) => ({ topic: t.slug }));
+  const { listeningTopics } = await import("@/lib/data/listeningTopics");
+  const allTopics = [...grammarTopics, ...listeningTopics];
+  return allTopics.map((t) => ({ topic: t.slug }));
 }

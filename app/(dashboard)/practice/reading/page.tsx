@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { ReadingPracticeClient } from "@/components/test/ReadingPracticeClient";
 import type { Question, Passage } from "@/types/test";
+import { BookOpenIcon } from "@/components/ui/Icons";
 
 interface Props {
   searchParams: Promise<{ passage_id?: string }>;
@@ -42,7 +43,7 @@ export default async function ReadingPracticePage({ searchParams }: Props) {
   if (!passageData) {
     return (
       <div style={{ textAlign: "center", padding: "60px 24px", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
-        <p style={{ fontSize: "48px", marginBottom: "16px" }}>📖</p>
+        <div style={{ marginBottom: "16px", color: "var(--color-text-muted)" }}><BookOpenIcon size={48} /></div>
         <p style={{ fontSize: "var(--text-lg)", fontWeight: 600, color: "var(--color-text-primary)", marginBottom: "8px" }}>No reading passages available</p>
         <p>Reading passages will be available after migrations are applied.</p>
       </div>

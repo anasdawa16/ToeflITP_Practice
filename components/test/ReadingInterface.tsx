@@ -21,14 +21,14 @@ interface ReadingInterfaceProps {
 
 type MobileTab = "passage" | "questions";
 
-/** Extract a referenced line number from question text, e.g. "…in line 12…" → 12 */
+/** Extract a referenced line number from question text, e.g. "...in line 12..." -> 12 */
 function extractLineRef(text: string): number | null {
-  const match = text.match(/\blines?\s+(\d+)(?:\s*[-–]\s*\d+)?/i);
+  const match = text.match(/\blines?\s+(\d+)(?:\s*[-—]\s*\d+)?/i);
   if (match) return parseInt(match[1], 10);
   return null;
 }
 
-// ─── Single question card ─────────────────────────────────────
+// ─── Single question card ──────────────────────────────────────────
 
 function QuestionCard({
   question,
@@ -54,8 +54,8 @@ function QuestionCard({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span style={{
           padding: "3px 12px",
-          backgroundColor: "rgba(30,74,155,0.15)",
-          border: "1px solid rgba(30,74,155,0.3)",
+          backgroundColor: "rgba(124,58,237,0.15)",
+          border: "1px solid rgba(124,58,237,0.3)",
           borderRadius: "var(--radius-full)",
           color: "var(--color-primary-300)",
           fontSize: "var(--text-xs)",
@@ -100,7 +100,7 @@ function QuestionCard({
                 alignItems: "flex-start",
                 gap: "10px",
                 padding: "13px 14px",
-                backgroundColor: isSelected ? "rgba(30,74,155,0.2)" : "var(--color-bg-card)",
+                backgroundColor: isSelected ? "rgba(124,58,237,0.2)" : "var(--color-bg-card)",
                 border: `1.5px solid ${isSelected ? "var(--color-primary-400)" : "var(--color-border)"}`,
                 borderRadius: "var(--radius-lg)",
                 cursor: "pointer",
@@ -133,7 +133,7 @@ function QuestionCard({
   );
 }
 
-// ─── Progress dots ────────────────────────────────────────────
+// ─── Progress dots ─────────────────────────────────────────────────
 
 function ProgressDots({
   questions,
@@ -149,6 +149,7 @@ function ProgressDots({
   return (
     <div style={{
       display: "flex",
+      alignItems: "center",
       gap: "4px",
       padding: "10px 16px",
       borderTop: "1px solid var(--color-border)",
@@ -186,7 +187,7 @@ function ProgressDots({
   );
 }
 
-// ─── MAIN SPLIT-PANE READING INTERFACE ───────────────────────
+// ─── MAIN SPLIT-PANE READING INTERFACE ───────────────────────────────
 
 export function ReadingInterface({
   passage,
@@ -212,7 +213,7 @@ export function ReadingInterface({
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === questions.length - 1;
 
-  // ── Navigation bar (shared desktop + mobile) ──────────────
+    // ─── Navigation bar (shared desktop + mobile) ──────────────
   const NavBar = (
     <div style={{
       display: "flex",
@@ -285,10 +286,10 @@ export function ReadingInterface({
     </div>
   );
 
-  // ── DESKTOP: side-by-side split ───────────────────────────
+    // ─── DESKTOP: side-by-side split ───────────────────────────
   return (
     <>
-      {/* ——— DESKTOP LAYOUT ——————————————————————————————————— */}
+            {/* ─── DESKTOP LAYOUT ─────────────────────────────────── */}
       <div
         className="reading-desktop"
         style={{
@@ -346,7 +347,7 @@ export function ReadingInterface({
         </div>
       </div>
 
-      {/* ——— MOBILE LAYOUT ——————————————————————————————————— */}
+            {/* ─── MOBILE LAYOUT ──────────────────────────────────── */}
       <div
         className="reading-mobile"
         style={{
@@ -380,7 +381,7 @@ export function ReadingInterface({
                 textTransform: "capitalize",
               }}
             >
-              {tab === "passage" ? "📖 Passage" : "❓ Questions"}
+              {tab === "passage" ? "📖 Passage" : "📝 Questions"}
               {tab === "questions" && (
                 <span style={{ marginLeft: "6px", fontSize: "11px" }}>
                   ({Object.keys(answers).length}/{questions.length})

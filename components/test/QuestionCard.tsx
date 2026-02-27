@@ -203,8 +203,8 @@ export function QuestionCard({
           <span
             style={{
               padding: "3px 10px",
-              backgroundColor: "rgba(30,74,155,0.15)",
-              border: "1px solid rgba(30,74,155,0.3)",
+              backgroundColor: "rgba(124,58,237,0.15)",
+              border: "1px solid rgba(124,58,237,0.3)",
               borderRadius: "var(--radius-full)",
               color: "var(--color-primary-300)",
               fontSize: "var(--text-xs)",

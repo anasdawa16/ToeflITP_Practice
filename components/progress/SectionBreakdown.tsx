@@ -4,6 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
+import { BarChartIcon } from "@/components/ui/Icons";
 
 interface TopicBar {
   name: string;
@@ -73,7 +74,7 @@ export function SectionBreakdown({ topicAccuracy, s2Accuracy, s3Accuracy }: Sect
     return (
       <div style={{ height: "200px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)", fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)" }}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ fontSize: "32px", marginBottom: "8px" }}>📊</p>
+          <div style={{ marginBottom: "8px", color: "var(--color-text-muted)" }}><BarChartIcon size={32} /></div>
           <p>Practice questions to see topic accuracy</p>
         </div>
       </div>

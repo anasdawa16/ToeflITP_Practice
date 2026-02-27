@@ -1,9 +1,20 @@
 "use client";
 
+import { useEffect } from "react";
 import { useAudioPlayer, type AudioState } from "@/lib/hooks/useAudioPlayer";
+import {
+  PlayIcon,
+  Volume2Icon,
+  VolumeXIcon,
+  HeadphonesIcon,
+  CheckIcon,
+  AlertTriangleIcon,
+  LoaderIcon,
+} from "@/components/ui/Icons";
 
 interface AudioPlayerProps {
-  audioUrl: string;
+  /** Dialogue transcript for TTS — each line is spoken by alternating voices */
+  transcript: string;
   title?: string;
   /** If true, the play button is auto-pressed on mount (per ETS — audio starts immediately) */
   autoPlay?: boolean;
@@ -19,25 +30,27 @@ function formatTime(s: number) {
 
 const STATE_LABELS: Record<AudioState, string> = {
   idle: "Click Play to begin",
-  loading: "Loading audio…",
+  loading: "Preparing audio…",
   playing: "Now playing",
   ended: "Audio complete — questions will appear below",
-  error: "Audio unavailable",
+  error: "Audio unavailable — your browser may not support text-to-speech",
 };
 
-export function AudioPlayer({ audioUrl, title, autoPlay = false, onEnded, onPlay }: AudioPlayerProps) {
+export function AudioPlayer({ transcript, title, autoPlay = false, onEnded, onPlay }: AudioPlayerProps) {
   const { state, currentTime, duration, progress, play, stop } = useAudioPlayer({
-    audioUrl,
+    transcript,
     onEnded,
     onPlay,
   });
 
-  // Auto-play on mount if requested
-  // (Only fires once because of the one-play lock inside the hook)
-  if (autoPlay && state === "idle") {
-    // Use callback pattern via timeout to avoid rendering phase side-effect
-    setTimeout(() => play(), 100);
-  }
+  // Auto-play on mount if requested — must be in useEffect to avoid render-phase side-effects
+  useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => play(), 150);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isPlaying = state === "playing";
   const isEnded = state === "ended";
@@ -76,8 +89,14 @@ export function AudioPlayer({ audioUrl, title, autoPlay = false, onEnded, onPlay
       {/* Title + ETS badge */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "20px" }}>
-            {isEnded ? "🔇" : isPlaying ? "🔊" : "🎧"}
+          <span style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            width: "36px", height: "36px", borderRadius: "50%",
+            backgroundColor: "rgba(124,58,237,0.12)",
+            color: isEnded ? "#34d399" : isPlaying ? "#f87171" : "var(--color-primary-400)",
+            flexShrink: 0,
+          }}>
+            {isEnded ? <VolumeXIcon size={18} /> : isPlaying ? <Volume2Icon size={18} /> : <HeadphonesIcon size={18} />}
           </span>
           <div>
             <p style={{
@@ -140,7 +159,7 @@ export function AudioPlayer({ audioUrl, title, autoPlay = false, onEnded, onPlay
             {formatTime(currentTime)}
           </span>
           <span style={{ fontFamily: "var(--font-ui)", fontSize: "11px", color: "var(--color-text-muted)", fontVariantNumeric: "tabular-nums" }}>
-            {duration > 0 ? formatTime(duration) : "--:--"}
+            {duration > 0 ? `~${formatTime(duration)}` : "--:--"}
           </span>
         </div>
       </div>
@@ -170,15 +189,15 @@ export function AudioPlayer({ audioUrl, title, autoPlay = false, onEnded, onPlay
           }}
         >
           {isLoading ? (
-            <span style={{ fontSize: "14px", animation: "spin 800ms linear infinite" }}>⟳</span>
+            <LoaderIcon size={18} />
           ) : isPlaying ? (
-            <span style={{ fontSize: "16px" }}>▶</span>
+            <PlayIcon size={18} />
           ) : isEnded ? (
-            <span style={{ fontSize: "16px" }}>✓</span>
+            <CheckIcon size={18} />
           ) : isError ? (
-            <span style={{ fontSize: "16px" }}>⚠</span>
+            <AlertTriangleIcon size={18} />
           ) : (
-            <span style={{ fontSize: "16px" }}>▶</span>
+            <PlayIcon size={18} />
           )}
         </button>
 
@@ -187,13 +206,15 @@ export function AudioPlayer({ audioUrl, title, autoPlay = false, onEnded, onPlay
             {STATE_LABELS[state]}
           </p>
           {canPlay && (
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
-              ⚠ This audio can only be played <strong>once</strong> per ETS regulations.
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+              <AlertTriangleIcon size={12} style={{ flexShrink: 0 }} />
+              This audio can only be played <strong>once</strong> per ETS regulations.
             </p>
           )}
           {isEnded && (
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "#34d399" }}>
-              ✓ Answer the questions below.
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "#34d399", display: "flex", alignItems: "center", gap: "4px" }}>
+              <CheckIcon size={12} style={{ flexShrink: 0 }} />
+              Answer the questions below.
             </p>
           )}
         </div>

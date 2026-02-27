@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { useProfile } from "@/lib/hooks/useProfile";
+import { FlameIcon } from "@/components/ui/Icons";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -25,13 +26,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const sidebarWidth = sidebarCollapsed ? "72px" : "240px";
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--color-bg-primary)" }}>
+    <div
+      className="min-h-screen bg-[var(--color-bg-primary)]"
+      style={{ ["--sidebar-w" as never]: sidebarWidth }}
+    >
 
       {/* ── Desktop & Tablet Sidebar (md: 768px+) ── */}
       <div className="hidden md:block">
         <Sidebar
           profile={profile}
           isLoading={isLoading}
+          collapsed={sidebarCollapsed}
+          onCollapsedChange={setSidebarCollapsed}
         />
       </div>
 
@@ -45,68 +51,40 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* ── Mobile TopBar (full width, 56px, fixed) ── */}
-      <div
-        className="md:hidden"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "56px",
-          backgroundColor: "var(--color-bg-card)",
-          borderBottom: "1px solid var(--color-border)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          zIndex: 30,
-          // Safe area for notched phones
-          paddingTop: "calc(var(--safe-top))",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "var(--text-lg)",
-            fontWeight: 700,
-            color: "var(--color-text-primary)",
-          }}
-        >
-          TOEFL<span style={{ color: "var(--color-accent-400)" }}>Master</span>
-        </span>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-30 border-b border-[var(--color-border)] bg-[var(--color-bg-card)]">
+        <div className="h-[56px] pt-[var(--safe-top)] px-4 flex items-center justify-between">
+          <span className="font-[var(--font-display)] text-[var(--text-lg)] font-bold text-[var(--color-text-primary)]">
+            TOEFL<span className="text-[var(--color-accent-400)]">Master</span>
+          </span>
 
-        {/* Mobile streak badge */}
-        {!isLoading && (profile?.study_streak ?? 0) > 0 && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              padding: "4px 10px",
-              backgroundColor: "rgba(245,158,11,0.12)",
-              border: "1px solid rgba(245,158,11,0.2)",
-              borderRadius: "var(--radius-full)",
-              color: "var(--color-accent-300)",
-              fontSize: "var(--text-sm)",
-              fontWeight: 700,
-              fontFamily: "var(--font-ui)",
-              minHeight: "unset", // override 44px rule from CSS
-            }}
-          >
-            🔥 {profile?.study_streak}
-          </div>
-        )}
+          {/* Mobile streak badge */}
+          {!isLoading && (profile?.study_streak ?? 0) > 0 && (
+            <div
+              className="
+                inline-flex items-center gap-1.5
+                px-2.5 py-1
+                rounded-full
+                border border-[rgba(255,255,255,0.10)]
+                bg-[rgba(255,255,255,0.04)]
+                text-[var(--color-text-primary)]
+                text-[var(--text-sm)] font-semibold
+              "
+              style={{ minHeight: "unset" }} // override 44px rule from globals
+              title={`${profile?.study_streak} day study streak`}
+            >
+              <FlameIcon size={15} className="text-[var(--color-accent-300)]" />
+              <span className="text-[var(--color-text-secondary)]">{profile?.study_streak}</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Main Content Area ── */}
       <main
-        style={{
-          transition: "margin-left 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
         className="
-          pt-14 md:pt-0
-          ml-0 md:ml-[240px]
-          md:pt-[64px]
+          pt-[calc(56px+var(--safe-top))] md:pt-[var(--topbar-height)]
+          ml-0 md:ml-[var(--sidebar-w)]
+          transition-[margin] duration-200
         "
       >
         {/* Inner container: responsive padding */}

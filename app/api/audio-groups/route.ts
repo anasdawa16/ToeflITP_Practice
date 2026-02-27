@@ -33,15 +33,15 @@ export async function GET() {
     .select("*")
     .eq("section", 1)
     .eq("is_active", true)
-    .in("audio_conversation_id", convIds)
+    .in("conversation_group_id", convIds)
     .order("question_order_in_group", { ascending: true });
 
-  // Cast to any[] — audio_conversation_id exists in DB but may not be in generated types
+  // Cast to any[] — conversation_group_id exists in DB but may not be in generated types
   const allQuestions = (questions ?? []) as Array<Record<string, unknown>>;
 
   const questionsByConv: Record<string, typeof allQuestions> = {};
   for (const q of allQuestions) {
-    const cid = q.audio_conversation_id as string;
+    const cid = q.conversation_group_id as string;
     questionsByConv[cid] = questionsByConv[cid] ?? [];
     questionsByConv[cid].push(q);
   }
@@ -49,15 +49,15 @@ export async function GET() {
   const groups = conversations.map((conv) => ({
     id: conv.id,
     title: conv.title ?? "Conversation",
-    audioUrl: conv.audio_url,
+    transcript: conv.transcript ?? "",
     part: conv.section_part as "A" | "B" | "C",
     questions: (questionsByConv[conv.id] ?? []).map((q) => ({
       id: String(q.id),
       questionText: String(q.question_text),
-      optionA: String(q.option_a),
-      optionB: String(q.option_b),
-      optionC: String(q.option_c),
-      optionD: String(q.option_d),
+      option_a: String(q.option_a),
+      option_b: String(q.option_b),
+      option_c: String(q.option_c),
+      option_d: String(q.option_d),
     })),
   }));
 

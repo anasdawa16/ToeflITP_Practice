@@ -34,10 +34,12 @@ ALTER TABLE vocabulary ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_vocabulary ENABLE ROW LEVEL SECURITY;
 
 -- Everyone can read vocabulary words
+DROP POLICY IF EXISTS "Public vocab read" ON vocabulary;
 CREATE POLICY "Public vocab read"
   ON vocabulary FOR SELECT USING (true);
 
 -- Users own their SRS state
+DROP POLICY IF EXISTS "Users own user_vocabulary" ON user_vocabulary;
 CREATE POLICY "Users own user_vocabulary"
   ON user_vocabulary FOR ALL
   USING (auth.uid() = user_id);

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FlashCard, type VocabWord } from "@/components/vocabulary/FlashCard";
 import { statusColor, statusLabel } from "@/lib/utils/srs";
+import { BarChartIcon } from "@/components/ui/Icons";
 
 type PageMode = "menu" | "review" | "browse";
 
@@ -150,7 +151,7 @@ export default function VocabularyPage() {
 
         {/* SRS explanation */}
         <div style={{ padding: "16px", backgroundColor: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: "var(--radius-xl)" }}>
-          <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", fontWeight: 700, color: "#60a5fa", marginBottom: "6px" }}>📊 How SRS Works</p>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", fontWeight: 700, color: "#60a5fa", marginBottom: "6px", display: "flex", alignItems: "center", gap: "5px" }}><BarChartIcon size={12} /> How SRS Works</p>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)", lineHeight: 1.7 }}>
             Words you know advance to the next box (longer review interval). Words you miss reset. Boxes 1→2→3→4→5 = review in 1→2→4→7→14 days. Master all 5 boxes to graduate a word.
           </p>

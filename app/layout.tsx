@@ -1,41 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import {
-  Playfair_Display,
-  Source_Serif_4,
-  DM_Sans,
+  Inter,
   JetBrains_Mono,
 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ScrollRevealInit } from "@/components/ui/ScrollRevealInit";
 import "./globals.css";
 
 /* ------------------------------------------------------------------
-   FONTS — per implementation plan Section 9.3
-   - Playfair Display : display headings (academic gravitas)
-   - Source Serif 4   : body text in passages/questions
-   - DM Sans          : UI elements, navigation, labels
-   - JetBrains Mono   : code/monospace elements
+   FONTS — Minimal Portfolio style (Figma)
+   - Inter          : all UI text, headings, body (clean modern sans)
+   - JetBrains Mono : code/monospace elements
    ------------------------------------------------------------------ */
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["300", "400", "600", "700"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -92,8 +75,8 @@ export const viewport: Viewport = {
   maximumScale: 5,          // allow user zoom (accessibility)
   userScalable: true,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)",  color: "#0a0f1e" },
-    { media: "(prefers-color-scheme: light)", color: "#1e4a9b" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0c0c0f" },
+    { media: "(prefers-color-scheme: light)", color: "#7c3aed" },
   ],
 };
 
@@ -112,14 +95,13 @@ export default function RootLayout({
     >
       <body
         className={`
-          ${playfairDisplay.variable}
-          ${sourceSerif.variable}
-          ${dmSans.variable}
+          ${inter.variable}
           ${jetbrainsMono.variable}
           antialiased
         `}
       >
         {children}
+        <ScrollRevealInit />
         <Analytics />
         <SpeedInsights />
       </body>

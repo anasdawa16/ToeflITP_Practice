@@ -18,7 +18,7 @@ export interface GrammarTopic {
   subtitle: string;
   icon: string;
   color: string;
-  category: "structure" | "written_expression" | "reading";
+  category: "structure" | "written_expression" | "reading" | "listening";
   description: string;
   /** 3–5 key rules */
   rules: string[];
@@ -37,7 +37,7 @@ export const grammarTopics: GrammarTopic[] = [
     title: "Noun Clauses",
     subtitle: "What / That / Whether clauses as S or O",
     icon: "📎",
-    color: "#1e4a9b",
+    color: "#7c3aed",
     category: "structure",
     description:
       "A noun clause is a dependent clause that functions as a noun — as the subject, object, or complement of a sentence. In TOEFL ITP, noun clauses are tested in sentence completion (Structure) and you must choose the correct introductory word.",
@@ -541,7 +541,7 @@ export const grammarTopics: GrammarTopic[] = [
     title: "Main Idea Questions",
     subtitle: "What is the passage mainly about?",
     icon: "🎯",
-    color: "#1e4a9b",
+    color: "#7c3aed",
     category: "reading",
     description:
       "Main idea questions ask you to identify the central topic or argument of the entire passage. The correct answer must cover the passage as a whole — not just one paragraph or detail.",

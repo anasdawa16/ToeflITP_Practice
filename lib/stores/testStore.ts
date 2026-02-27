@@ -24,6 +24,7 @@ export interface TestStore {
 
   // Section data (all 3 sections, even if only some are active)
   s1Questions: Question[];
+  audioGroups: any[];
   s2Questions: Question[];
   s3Questions: Question[];
   passages: Record<string, Passage>; // passageId → Passage
@@ -58,6 +59,7 @@ export interface TestStore {
     sessionId: string;
     testType: "full_mock" | "section_practice";
     s1Questions: Question[];
+    audioGroups: any[];
     s2Questions: Question[];
     s3Questions: Question[];
     passages: Record<string, Passage>;
@@ -102,10 +104,11 @@ const INITIAL: Omit<TestStore, keyof Pick<TestStore,
   testType: "full_mock",
   status: "idle",
   s1Questions: [],
+  audioGroups: [],
   s2Questions: [],
   s3Questions: [],
   passages: {},
-  currentSection: 2, // default to S2 since S1 needs audio
+  currentSection: 1, // Start at S1 (Listening)
   currentQuestionIndex: 0,
   s1Answers: {},
   s2Answers: {},
@@ -143,17 +146,18 @@ export const useTestStore = create<TestStore>()(
     (set, get) => ({
       ...INITIAL,
 
-      initSession({ sessionId, testType, s1Questions, s2Questions, s3Questions, passages }) {
+      initSession({ sessionId, testType, s1Questions, audioGroups, s2Questions, s3Questions, passages }) {
         set({
           ...INITIAL,
           sessionId,
           testType,
           status: "in_progress",
           s1Questions,
+          audioGroups,
           s2Questions,
           s3Questions,
           passages,
-          currentSection: 2, // Start at S2 (no audio dependency for initial dev)
+          currentSection: 1, // Start at S1 (Listening)
           currentQuestionIndex: 0,
         });
       },
@@ -254,6 +258,7 @@ export const useTestStore = create<TestStore>()(
         testType: state.testType,
         status: state.status,
         s1Questions: state.s1Questions,
+        audioGroups: state.audioGroups,
         s2Questions: state.s2Questions,
         s3Questions: state.s3Questions,
         passages: state.passages,

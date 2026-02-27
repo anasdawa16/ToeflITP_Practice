@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
+import { FlagIcon, SmileIcon, PartyIcon, ClipboardIcon, HeadphonesIcon, AlertTriangleIcon } from "@/components/ui/Icons";
 import {
   useTestStore,
   selectCurrentQuestion,
@@ -9,10 +11,19 @@ import {
   selectSectionProgress,
   type TestSection,
 } from "@/lib/stores/testStore";
+
 import { SectionTimer } from "@/components/test/SectionTimer";
 import { AnswerSheetGrid } from "@/components/test/AnswerSheetGrid";
 import { ReadingInterface } from "@/components/test/ReadingInterface";
+import { ListeningQueueView, type AudioGroup } from "@/components/test/ListeningQueueView";
 import type { Question, Passage } from "@/types/test";
+
+// Stable selector instances — must be defined outside component to avoid
+// creating new function references on each render (fixes useSyncExternalStore
+// "getSnapshot should be cached" warning).
+const selectS1Progress = selectSectionProgress(1);
+const selectS2Progress = selectSectionProgress(2);
+const selectS3Progress = selectSectionProgress(3);
 
 
 // ─── Section Break Screen ─────────────────────────────────────
@@ -157,8 +168,8 @@ function QuestionView({
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{
             padding: "3px 12px",
-            backgroundColor: "rgba(30,74,155,0.15)",
-            border: "1px solid rgba(30,74,155,0.3)",
+            backgroundColor: "rgba(124,58,237,0.12)",
+            border: "1px solid rgba(124,58,237,0.25)",
             borderRadius: "var(--radius-full)",
             color: "var(--color-primary-300)",
             fontSize: "var(--text-xs)",
@@ -191,7 +202,7 @@ function QuestionView({
             gap: "4px",
           }}
         >
-          {isFlagged ? "🚩 Flagged" : "🏳 Flag"}
+          <FlagIcon size={14} active={isFlagged} /> {isFlagged ? "Flagged" : "Flag"}
         </button>
       </div>
 
@@ -233,7 +244,7 @@ function QuestionView({
                 alignItems: "flex-start",
                 gap: "12px",
                 padding: "14px 16px",
-                backgroundColor: isSelected ? "rgba(30,74,155,0.2)" : "var(--color-bg-card)",
+                backgroundColor: isSelected ? "rgba(124,58,237,0.15)" : "var(--color-bg-card)",
                 border: `1.5px solid ${isSelected ? "var(--color-primary-400)" : "var(--color-border)"}`,
                 borderRadius: "var(--radius-lg)",
                 cursor: "pointer",
@@ -464,12 +475,25 @@ export default function MockTestSessionPage({ params: _params }: Props) {
   const store = useTestStore();
   const currentQ = useTestStore(selectCurrentQuestion);
   const currentAns = useTestStore(selectCurrentAnswer);
-  const s2Progress = useTestStore(selectSectionProgress(2));
-  const s3Progress = useTestStore(selectSectionProgress(3));
+  // useShallow ensures object-returning selectors return a stable reference
+  // when the shallow values haven't changed, preventing the infinite loop.
+  const s1Progress = useTestStore(useShallow(selectS1Progress));
+  const s2Progress = useTestStore(useShallow(selectS2Progress));
+  const s3Progress = useTestStore(useShallow(selectS3Progress));
 
   const questions = store.currentSection === 2 ? store.s2Questions : store.s3Questions;
   const answers = store.currentSection === 2 ? store.s2Answers : store.s3Answers;
-  const currentTime = store.currentSection === 2 ? store.s2TimeRemaining : store.s3TimeRemaining;
+  const currentTime = store.currentSection === 1 ? store.s1TimeRemaining
+    : store.currentSection === 2 ? store.s2TimeRemaining
+    : store.s3TimeRemaining;
+
+  // ── Audio groups for Section 1 ──────────────────────────────
+  const audioGroups = store.audioGroups || [];
+
+  // Derived s1 answers in the flat format ListeningQueueView expects
+  const s1AnswersFlat: Record<string, "A" | "B" | "C" | "D"> = Object.fromEntries(
+    Object.entries(store.s1Answers).map(([id, v]) => [id, v.selected])
+  );
 
   // Timer tick — 1s interval
   useEffect(() => {
@@ -520,7 +544,9 @@ export default function MockTestSessionPage({ params: _params }: Props) {
 
   // Handle section timer expiry
   const handleSectionExpire = useCallback(() => {
-    if (store.currentSection < 3) {
+    if (store.currentSection === 1) {
+      setShowBreak({ from: 1, to: 2 });
+    } else if (store.currentSection < 3) {
       setShowBreak({ from: store.currentSection, to: (store.currentSection + 1) as TestSection });
     } else {
       void doSubmit();
@@ -538,7 +564,7 @@ export default function MockTestSessionPage({ params: _params }: Props) {
   if (store.status === "idle" || !store.sessionId) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "80vh", flexDirection: "column", gap: "20px", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
-        <p style={{ fontSize: "48px" }}>😕</p>
+        <p style={{ color: "var(--color-text-muted)" }}><AlertTriangleIcon size={48} /></p>
         <p style={{ fontSize: "var(--text-lg)" }}>No active test session.</p>
         <button onClick={() => router.push("/mock-test")} style={{ padding: "10px 24px", backgroundColor: "var(--color-primary-500)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", cursor: "pointer", fontFamily: "var(--font-ui)", fontWeight: 600 }}>
           Start a New Test
@@ -557,6 +583,17 @@ export default function MockTestSessionPage({ params: _params }: Props) {
   const flaggedS2 = s2Progress.flagged;
   const flaggedS3 = s3Progress.flagged;
 
+  // Section tab progress helper
+  const sectionTabProgress = (sec: TestSection) => {
+    if (sec === 1) {
+      // Use answered count from s1Answers; total from audio group question count
+      const total = audioGroups.reduce((sum, g) => sum + g.questions.length, 0) || s1Progress.total;
+      return { total, answered: s1Progress.answered, flagged: 0 };
+    }
+    if (sec === 2) return s2Progress;
+    return s3Progress;
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--color-bg-base)" }}>
       {/* ── STICKY TOP BAR ─────────────────────────────────────── */}
@@ -569,9 +606,10 @@ export default function MockTestSessionPage({ params: _params }: Props) {
       }}>
         {/* Section tabs */}
         <div style={{ display: "flex", gap: "6px" }}>
-          {([2, 3] as TestSection[]).map((sec) => {
-            const prog = sec === 2 ? s2Progress : s3Progress;
+          {([1, 2, 3] as TestSection[]).map((sec) => {
+            const prog = sectionTabProgress(sec);
             const isCurrent = store.currentSection === sec;
+            const secLabel = sec === 1 ? "Listening" : sec === 2 ? "Structure" : "Reading";
             return (
               <button
                 key={sec}
@@ -581,7 +619,7 @@ export default function MockTestSessionPage({ params: _params }: Props) {
                   padding: "6px 14px",
                   borderRadius: "var(--radius-md)",
                   border: `1.5px solid ${isCurrent ? "var(--color-primary-500)" : "var(--color-border)"}`,
-                  backgroundColor: isCurrent ? "rgba(30,74,155,0.2)" : "transparent",
+                  backgroundColor: isCurrent ? "rgba(124,58,237,0.15)" : "transparent",
                   color: isCurrent ? "var(--color-primary-300)" : "var(--color-text-muted)",
                   fontFamily: "var(--font-ui)",
                   fontSize: "var(--text-xs)",
@@ -590,7 +628,7 @@ export default function MockTestSessionPage({ params: _params }: Props) {
                   display: "flex", alignItems: "center", gap: "6px",
                 }}
               >
-                <span>Section {sec}</span>
+                <span>S{sec} {secLabel}</span>
                 <span style={{
                   padding: "1px 7px",
                   backgroundColor: prog.answered === prog.total
@@ -610,10 +648,12 @@ export default function MockTestSessionPage({ params: _params }: Props) {
 
         <div style={{ flex: 1 }} />
 
-        {/* Q position */}
+        {/* Q position — hidden for S1 (listening self-navigates) */}
+        {store.currentSection !== 1 && (
         <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)", flexShrink: 0 }}>
           Q {store.currentQuestionIndex + 1} of {questions.length}
         </span>
+        )}
 
         {/* Timer */}
         <SectionTimer
@@ -622,7 +662,8 @@ export default function MockTestSessionPage({ params: _params }: Props) {
           onExpire={handleSectionExpire}
         />
 
-        {/* Answer sheet toggle */}
+        {/* Answer sheet toggle — hidden for S1 */}
+        {store.currentSection !== 1 && (
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -638,8 +679,9 @@ export default function MockTestSessionPage({ params: _params }: Props) {
             display: "flex", alignItems: "center", gap: "5px",
           }}
         >
-          📋 Answer Sheet
+          <ClipboardIcon size={14} /> Answer Sheet
         </button>
+        )}
 
         {/* Submit */}
         <button
@@ -663,7 +705,24 @@ export default function MockTestSessionPage({ params: _params }: Props) {
       </header>
 
       {/* ── QUESTION / READING AREA ──────────────────────────── */}
-      {store.currentSection === 3 ? (
+      {store.currentSection === 1 ? (
+        /* S1: listening queue */
+        <main style={{ flex: 1, overflowY: "auto" }}>
+          {audioGroups.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
+              <p style={{ marginBottom: "12px", color: "var(--color-primary-400)" }}><HeadphonesIcon size={32} /></p>
+              <p>Loading audio tracks…</p>
+            </div>
+          ) : (
+            <ListeningQueueView
+              groups={audioGroups}
+              answers={s1AnswersFlat}
+              onAnswer={(qId, letter) => store.answerQuestion(qId, letter)}
+              onSectionComplete={() => setShowBreak({ from: 1, to: 2 })}
+            />
+          )}
+        </main>
+      ) : store.currentSection === 3 ? (
         /* S3: full split-pane reading interface */
         (() => {
           const s3Q = store.s3Questions;
@@ -748,7 +807,7 @@ export default function MockTestSessionPage({ params: _params }: Props) {
             />
           ) : (
             <div style={{ textAlign: "center", padding: "80px 0", fontFamily: "var(--font-ui)" }}>
-              <p style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</p>
+              <p style={{ marginBottom: "16px", color: "#34d399" }}><PartyIcon size={48} /></p>
               <p style={{ fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "8px" }}>
                 All done with Section {store.currentSection}!
               </p>
@@ -762,8 +821,8 @@ export default function MockTestSessionPage({ params: _params }: Props) {
       )}
 
 
-      {/* ── BOTTOM NAV ─────────────────────────────────────────── */}
-      {currentQ && (
+      {/* ── BOTTOM NAV — hidden for S1 (listening flow self-navigates) ─── */}
+      {currentQ && store.currentSection !== 1 && (
         <footer style={{
           position: "sticky", bottom: 0,
           backgroundColor: "var(--color-bg-surface)",

@@ -109,7 +109,7 @@ function ChipGroup<T extends string>({
                 ? "1.5px solid var(--color-primary-500)"
                 : "1.5px solid var(--color-border)",
               backgroundColor: active
-                ? "rgba(30,74,155,0.2)"
+                ? "rgba(124,58,237,0.2)"
                 : "rgba(255,255,255,0.03)",
               color: active
                 ? "var(--color-primary-300)"
@@ -149,7 +149,7 @@ function TopicPicker({
           padding: "8px 14px",
           borderRadius: "var(--radius-md)",
           border: value === "" ? "1.5px solid var(--color-primary-500)" : "1.5px solid var(--color-border)",
-          backgroundColor: value === "" ? "rgba(30,74,155,0.2)" : "rgba(255,255,255,0.03)",
+          backgroundColor: value === "" ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.03)",
           color: value === "" ? "var(--color-primary-300)" : "var(--color-text-secondary)",
           fontFamily: "var(--font-ui)",
           fontSize: "var(--text-sm)",
@@ -202,7 +202,7 @@ function TopicPicker({
                       padding: "5px 12px",
                       borderRadius: "var(--radius-full)",
                       border: active ? "1.5px solid var(--color-primary-400)" : "1.5px solid var(--color-border)",
-                      backgroundColor: active ? "rgba(30,74,155,0.25)" : "rgba(255,255,255,0.03)",
+                      backgroundColor: active ? "rgba(124,58,237,0.25)" : "rgba(255,255,255,0.03)",
                       color: active ? "var(--color-primary-300)" : "var(--color-text-muted)",
                       fontFamily: "var(--font-ui)",
                       fontSize: "var(--text-xs)",

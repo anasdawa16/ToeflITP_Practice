@@ -41,6 +41,7 @@ export default function NewMockTestPage() {
           sessionId: data.sessionId,
           testType: data.testType,
           s1Questions: data.s1Questions as Question[],
+          audioGroups: data.audioGroups as any[],
           s2Questions: data.s2Questions as Question[],
           s3Questions: data.s3Questions as Question[],
           passages: data.passages as Record<string, Passage>,

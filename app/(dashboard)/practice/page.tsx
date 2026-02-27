@@ -1,11 +1,13 @@
+import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { GridIcon, PencilIcon, BookOpenIcon, TargetIcon, HeadphonesIcon } from "@/components/ui/Icons";
 
 interface SectionCard {
   href: string;
   title: string;
   subtitle: string;
-  icon: string;
+  icon: ReactNode;
   color: string;
   total: number;
 }
@@ -17,11 +19,12 @@ async function getQuestionCounts() {
     .select("section, part")
     .eq("is_active", true);
 
+  const s1Listening = data?.filter((q) => q.section === 1).length ?? 0;
   const s2Structure = data?.filter((q) => q.section === 2 && q.part === "structure").length ?? 0;
   const s2WE = data?.filter((q) => q.section === 2 && q.part === "written_expression").length ?? 0;
   const s3Reading = data?.filter((q) => q.section === 3).length ?? 0;
 
-  return { s2Structure, s2WE, s3Reading };
+  return { s1Listening, s2Structure, s2WE, s3Reading };
 }
 
 export default async function PracticePage() {
@@ -29,10 +32,18 @@ export default async function PracticePage() {
 
   const sections: SectionCard[] = [
     {
+      href: "/practice/listening",
+      title: "Listening Comprehension",
+      subtitle: "Section 1",
+      icon: <HeadphonesIcon size={28} />,
+      color: "#8b5cf6",
+      total: counts.s1Listening,
+    },
+    {
       href: "/practice/structure",
       title: "Structure",
       subtitle: "Section 2 Part A",
-      icon: "🧱",
+      icon: <GridIcon size={28} />,
       color: "var(--color-primary-500)",
       total: counts.s2Structure,
     },
@@ -40,7 +51,7 @@ export default async function PracticePage() {
       href: "/practice/written-expression",
       title: "Written Expression",
       subtitle: "Section 2 Part B",
-      icon: "✍️",
+      icon: <PencilIcon size={28} />,
       color: "#7c3aed",
       total: counts.s2WE,
     },
@@ -48,7 +59,7 @@ export default async function PracticePage() {
       href: "/practice/reading",
       title: "Reading Comprehension",
       subtitle: "Section 3",
-      icon: "📖",
+      icon: <BookOpenIcon size={28} />,
       color: "#0891b2",
       total: counts.s3Reading,
     },
@@ -118,7 +129,7 @@ export default async function PracticePage() {
               }}
             />
 
-            <div style={{ fontSize: "36px", marginBottom: "16px" }}>{s.icon}</div>
+            <div style={{ marginBottom: "16px", color: s.color }}>{s.icon}</div>
 
             <h2
               style={{
@@ -182,8 +193,8 @@ export default async function PracticePage() {
         style={{
           marginTop: "24px",
           padding: "24px 28px",
-          background: "linear-gradient(135deg, rgba(30,74,155,0.2) 0%, rgba(124,58,237,0.15) 100%)",
-          border: "1px solid rgba(30,74,155,0.35)",
+          background: "linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.1) 100%)",
+          border: "1px solid rgba(124,58,237,0.3)",
           borderRadius: "var(--radius-xl)",
           display: "flex",
           alignItems: "center",
@@ -193,7 +204,7 @@ export default async function PracticePage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          <span style={{ fontSize: "32px" }}>🎯</span>
+          <span style={{ color: "var(--color-primary-400)" }}><TargetIcon size={32} /></span>
           <div>
             <h3
               style={{
@@ -250,10 +261,11 @@ export default async function PracticePage() {
         </h2>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           {[
+            { label: "Listening Practice", href: "/practice/listening" },
             { label: "10 Structure Q's", href: "/practice/structure?limit=10" },
             { label: "10 Written Expression Q's", href: "/practice/written-expression?limit=10" },
             { label: "1 Reading Passage", href: "/practice/reading?limit=1" },
-            { label: "🎯 Custom Drill", href: "/practice/drill" },
+            { label: "Custom Drill", href: "/practice/drill" },
           ].map((q) => (
             <Link
               key={q.href}

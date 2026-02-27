@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import {
+  ClipboardIcon,
+  ZapIcon,
+  BookIcon,
+  SparklesIcon,
+  FlameIcon,
+  TargetIcon,
+  BarChartIcon,
+} from "@/components/ui/Icons";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -51,7 +61,7 @@ export default async function DashboardPage() {
             marginBottom: "8px",
           }}
         >
-          Welcome back, {firstName} 👋
+          Welcome back, {firstName}
         </h1>
         <p
           style={{
@@ -73,36 +83,36 @@ export default async function DashboardPage() {
           marginBottom: "32px",
         }}
       >
-        {[
+        {([
           {
             title: "Full Mock Test",
             description: "115-minute complete TOEFL ITP simulation",
             href: "/mock-test",
             accent: "var(--color-primary-400)",
-            emoji: "📝",
+            icon: <ClipboardIcon size={26} />,
           },
           {
             title: "Quick Practice",
             description: "10 questions in 10 minutes for daily warmup",
             href: "/practice",
             accent: "var(--color-accent-400)",
-            emoji: "⚡",
+            icon: <ZapIcon size={26} />,
           },
           {
             title: "Learn Concepts",
             description: "Study grammar rules and listening strategies",
             href: "/learn",
             accent: "#34d399",
-            emoji: "📖",
+            icon: <BookIcon size={26} />,
           },
           {
             title: "AI Assistant",
             description: "Ask Claude to explain any question or concept",
             href: "/ai-assistant",
             accent: "#a78bfa",
-            emoji: "🧠",
+            icon: <SparklesIcon size={26} />,
           },
-        ].map((card) => (
+        ] as { title: string; description: string; href: string; accent: string; icon: ReactNode }[]).map((card) => (
           <a
             key={card.href}
             href={card.href}
@@ -127,7 +137,7 @@ export default async function DashboardPage() {
               (e.currentTarget as HTMLElement).style.boxShadow = "none";
             }}
           >
-            <div style={{ fontSize: "2rem", marginBottom: "12px" }}>{card.emoji}</div>
+            <div style={{ marginBottom: "12px", color: card.accent }}>{card.icon}</div>
             <h2
               style={{
                 fontFamily: "var(--font-ui)",
@@ -162,10 +172,10 @@ export default async function DashboardPage() {
         }}
       >
         {[
-          { label: "Study Streak", value: `${profile?.study_streak ?? 0} days`, icon: "🔥" },
-          { label: "Target Score", value: String(profile?.target_score ?? "—"), icon: "🎯" },
-          { label: "Level", value: profile?.current_level ?? "beginner", icon: "📊" },
-          { label: "Mock Tests", value: "0", icon: "📝" },
+          { label: "Study Streak", value: `${profile?.study_streak ?? 0} days`, icon: <FlameIcon size={22} /> },
+          { label: "Target Score", value: String(profile?.target_score ?? "—"), icon: <TargetIcon size={22} /> },
+          { label: "Level", value: profile?.current_level ?? "beginner", icon: <BarChartIcon size={22} /> },
+          { label: "Mock Tests", value: "0", icon: <ClipboardIcon size={22} /> },
         ].map((stat) => (
           <div
             key={stat.label}
@@ -176,7 +186,7 @@ export default async function DashboardPage() {
               borderRadius: "var(--radius-lg)",
             }}
           >
-            <div style={{ fontSize: "1.5rem", marginBottom: "8px" }}>{stat.icon}</div>
+            <div style={{ marginBottom: "8px", color: "var(--color-primary-400)" }}>{stat.icon}</div>
             <p
               style={{
                 fontFamily: "var(--font-display)",

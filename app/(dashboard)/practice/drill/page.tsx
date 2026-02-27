@@ -1,4 +1,5 @@
 import { DrillSetup } from "@/components/test/DrillSetup";
+import { TargetIcon } from "@/components/ui/Icons";
 
 export default function DrillPage() {
   return (
@@ -6,7 +7,7 @@ export default function DrillPage() {
       {/* Header */}
       <div style={{ maxWidth: "640px", margin: "0 auto 36px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-          <span style={{ fontSize: "28px" }}>🎯</span>
+          <span style={{ color: "#8b5cf6" }}><TargetIcon size={28} /></span>
           <h1
             style={{
               fontFamily: "var(--font-display)",

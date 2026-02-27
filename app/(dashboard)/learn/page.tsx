@@ -1,13 +1,44 @@
 import Link from "next/link";
 import { grammarTopics, getTopicsByCategory } from "@/lib/data/grammarTopics";
+import { listeningTopics } from "@/lib/data/listeningTopics";
 import type { GrammarTopic } from "@/lib/data/grammarTopics";
+import {
+  HeadphonesIcon,
+  MessagesIcon,
+  BookOpenIcon,
+  SparklesIcon,
+  BookIcon,
+  LayersIcon,
+  GridIcon,
+  PencilIcon,
+  FileTextIcon,
+  GraduationCapIcon,
+  TargetIcon,
+  ClipboardIcon,
+  BrainIcon,
+  ListIcon,
+} from "@/components/ui/Icons";
+
+const ICON_MAP: Record<string, React.ReactNode> = {
+  messages: <MessagesIcon size={22} />,
+  users: <HeadphonesIcon size={22} />,
+  graduation: <GraduationCapIcon size={22} />,
+  sparkles: <SparklesIcon size={22} />,
+  book: <BookIcon size={22} />,
+  layers: <LayersIcon size={22} />,
+};
 
 function TopicCard({ topic }: { topic: GrammarTopic }) {
   const categoryLabel: Record<string, string> = {
+    listening: "Listening",
     structure: "Structure",
     written_expression: "Written Expression",
     reading: "Reading",
   };
+
+  const iconNode = ICON_MAP[topic.icon] || (
+    <span style={{ fontSize: "22px", lineHeight: 1 }}>{topic.icon}</span>
+  );
 
   return (
     <Link
@@ -46,7 +77,7 @@ function TopicCard({ topic }: { topic: GrammarTopic }) {
           marginBottom: "12px",
         }}
       >
-        <span style={{ fontSize: "24px" }}>{topic.icon}</span>
+        <span style={{ color: topic.color, display: "flex", alignItems: "center" }}>{iconNode}</span>
         <span
           style={{
             padding: "2px 10px",
@@ -121,14 +152,17 @@ function TopicCard({ topic }: { topic: GrammarTopic }) {
 }
 
 export default function LearnPage() {
+  const allTopics = [...listeningTopics, ...grammarTopics];
+  const listening = listeningTopics;
   const structure = getTopicsByCategory("structure");
   const we = getTopicsByCategory("written_expression");
   const reading = getTopicsByCategory("reading");
 
   const groups = [
-    { label: "Section 2 · Structure", icon: "🧱", topics: structure, color: "#1e4a9b" },
-    { label: "Section 2 · Written Expression", icon: "✍️", topics: we, color: "#7c3aed" },
-    { label: "Section 3 · Reading Comprehension", icon: "📖", topics: reading, color: "#0891b2" },
+    { label: "Section 1 · Listening Comprehension", icon: <HeadphonesIcon size={20} />, topics: listening, color: "#8b5cf6" },
+    { label: "Section 2 · Structure", icon: <GridIcon size={20} />, topics: structure, color: "#7c3aed" },
+    { label: "Section 2 · Written Expression", icon: <PencilIcon size={20} />, topics: we, color: "#7c3aed" },
+    { label: "Section 3 · Reading Comprehension", icon: <BookOpenIcon size={20} />, topics: reading, color: "#0891b2" },
   ];
 
   return (
@@ -153,7 +187,7 @@ export default function LearnPage() {
             color: "var(--color-text-secondary)",
           }}
         >
-          Master TOEFL ITP grammar with rule cards, examples, and mnemonics — then drill the topic.
+          Master all three TOEFL ITP sections with strategy cards, worked examples, and mnemonics.
         </p>
       </div>
 
@@ -167,10 +201,10 @@ export default function LearnPage() {
         }}
       >
         {[
-          { label: "Topics", value: grammarTopics.length, icon: "📚" },
-          { label: "Grammar Rules", value: grammarTopics.reduce((a, t) => a + t.rules.length, 0), icon: "📋" },
-          { label: "Worked Examples", value: grammarTopics.reduce((a, t) => a + t.examples.length, 0), icon: "✏️" },
-          { label: "Mnemonics", value: grammarTopics.filter((t) => t.mnemonic).length, icon: "🧠" },
+          { label: "Topics", value: allTopics.length, icon: <ClipboardIcon size={20} /> },
+          { label: "Strategy Rules", value: allTopics.reduce((a, t) => a + t.rules.length, 0), icon: <ListIcon size={20} /> },
+          { label: "Worked Examples", value: allTopics.reduce((a, t) => a + t.examples.length, 0), icon: <FileTextIcon size={20} /> },
+          { label: "Mnemonics", value: allTopics.filter((t) => t.mnemonic).length, icon: <BrainIcon size={20} /> },
         ].map((s) => (
           <div
             key={s.label}
@@ -184,7 +218,7 @@ export default function LearnPage() {
               gap: "10px",
             }}
           >
-            <span style={{ fontSize: "20px" }}>{s.icon}</span>
+            <span style={{ color: "var(--color-primary-400)", display: "flex", alignItems: "center" }}>{s.icon}</span>
             <div>
               <div
                 style={{
@@ -227,7 +261,7 @@ export default function LearnPage() {
               borderBottom: "1px solid var(--color-border)",
             }}
           >
-            <span style={{ fontSize: "20px" }}>{group.icon}</span>
+            <span style={{ color: group.color, display: "flex", alignItems: "center" }}>{group.icon}</span>
             <h2
               style={{
                 fontFamily: "var(--font-display)",

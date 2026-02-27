@@ -62,7 +62,7 @@ export function ReadingPracticeClient({ passage, questions }: Props) {
         <div style={{ display: "flex", gap: "12px", width: "100%" }}>
           <button
             onClick={() => router.push("/practice/reading")}
-            style={{ flex: 1, padding: "12px", backgroundColor: "rgba(30,74,155,0.15)", border: "1px solid rgba(30,74,155,0.3)", borderRadius: "var(--radius-md)", fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--color-primary-300)", cursor: "pointer" }}
+            style={{ flex: 1, padding: "12px", backgroundColor: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.3)", borderRadius: "var(--radius-md)", fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--color-primary-300)", cursor: "pointer" }}
           >
             New Passage
           </button>

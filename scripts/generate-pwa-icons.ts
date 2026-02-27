@@ -18,4 +18,4 @@
 export const REQUIRED_ICON_SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
 
 export const ICON_GENERATION_COMMAND =
-  "npx pwa-asset-generator ./public/logo.png ./public/icons --background '#0a0f1e' --padding '20%' --icon-only";
+  "npx pwa-asset-generator ./public/logo.png ./public/icons --background '#0c0c0f' --padding '20%' --icon-only";

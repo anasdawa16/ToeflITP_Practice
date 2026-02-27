@@ -55,7 +55,7 @@ export function AnswerOptions({
 
         if (isSelected && feedback === "none") {
           borderColor = "var(--color-primary-400)";
-          backgroundColor = "rgba(30,74,155,0.15)";
+          backgroundColor = "rgba(124,58,237,0.15)";
           letterBg = "var(--color-primary-600)";
           letterColor = "var(--color-primary-100)";
         }
@@ -100,7 +100,7 @@ export function AnswerOptions({
             onMouseEnter={(e) => {
               if (!disabled && !isSelected) {
                 e.currentTarget.style.borderColor = "var(--color-primary-500)";
-                e.currentTarget.style.backgroundColor = "rgba(30,74,155,0.08)";
+                e.currentTarget.style.backgroundColor = "rgba(124,58,237,0.08)";
               }
             }}
             onMouseLeave={(e) => {
@@ -159,7 +159,7 @@ export function AnswerOptions({
                   marginLeft: "auto",
                 }}
               >
-                ✓
+                ✔
               </span>
             )}
             {showWrong && (
@@ -171,7 +171,7 @@ export function AnswerOptions({
                   marginLeft: "auto",
                 }}
               >
-                ✗
+                ✖
               </span>
             )}
           </button>

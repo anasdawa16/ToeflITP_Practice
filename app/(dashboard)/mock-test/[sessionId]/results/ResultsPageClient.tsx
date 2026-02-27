@@ -236,7 +236,7 @@ function AnswerReview({ questions, answers, sectionIds }: {
                   })}
                 </div>
                 {q.explanation && (
-                  <div style={{ padding: "12px", backgroundColor: "rgba(30,74,155,0.1)", border: "1px solid rgba(30,74,155,0.25)", borderRadius: "var(--radius-md)" }}>
+                  <div style={{ padding: "12px", backgroundColor: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "var(--radius-md)" }}>
                     <p style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-xs)", fontWeight: 700, color: "var(--color-primary-300)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "4px" }}>Explanation</p>
                     <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 1.6, margin: 0 }}>{q.explanation}</p>
                   </div>
@@ -424,7 +424,7 @@ export default function ResultsPageClient({ sessionId }: { sessionId: string }) 
       </div>
 
       {/* ── What This Score Means ──────────────────────────────── */}
-      <div style={{ padding: "20px 24px", backgroundColor: "rgba(30,74,155,0.08)", border: "1px solid rgba(30,74,155,0.2)", borderRadius: "var(--radius-xl)", marginBottom: "32px" }}>
+      <div style={{ padding: "20px 24px", backgroundColor: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.15)", borderRadius: "var(--radius-xl)", marginBottom: "32px" }}>
         <h3 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "12px" }}>
           Score Band Reference
         </h3>

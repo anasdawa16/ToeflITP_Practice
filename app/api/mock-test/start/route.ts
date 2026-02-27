@@ -26,6 +26,13 @@ export async function POST(request: Request) {
 
   // ── Fetch questions ──────────────────────────────────────────
 
+  // S1 questions (Listening)
+  const { data: s1Raw } = await supabase
+    .from("questions")
+    .select("*, audio_conversations(*)")
+    .eq("section", 1)
+    .eq("is_active", true);
+
   // S2 questions (Structure + Written Expression)
   const { data: s2Raw } = await supabase
     .from("questions")
@@ -67,10 +74,7 @@ export async function POST(request: Request) {
     }))
   );
 
-  // S1 placeholder (audio not implemented yet — empty for now)
-  const s1OrderedIds: string[] = [];
-
-  // ── Create session row ───────────────────────────────────────
+  // s1OrderedIds computation is moved down since we shuffle S1 directly
 
   const { data: session, error: sessionError } = await supabase
     .from("test_sessions")
@@ -78,9 +82,9 @@ export async function POST(request: Request) {
       user_id: user.id,
       test_type: testType,
       status: "in_progress",
-      current_section: 2,
+      current_section: 1,
       current_question_index: 0,
-      s1_question_ids: s1OrderedIds,
+      s1_question_ids: [], // We update this later after building S1 array
       s2_question_ids: s2OrderedIds,
       s3_question_ids: s3OrderedIds,
       s1_time_remaining: 2100,
@@ -102,10 +106,96 @@ export async function POST(request: Request) {
   const s2Ordered = s2OrderedIds.map((id) => s2Map[id]).filter(Boolean) as Question[];
   const s3Ordered = s3OrderedIds.map((id) => s3Map[id]).filter(Boolean) as Question[];
 
+  // ── S1 Structure Building per ETS Rules ──────────────────────
+  // Part A: 30 Qs (30 short convos, 1 Q each)
+  // Part B: 8 Qs (2 long convos, 4 Q each)
+  // Part C: 12 Qs (3 talks, 4 Q each)
+  
+  const allS1 = (s1Raw ?? []) as any[];
+  
+  // Group by Part A, B, C
+  const partA = allS1.filter(q => q.part === 'A');
+  const partB = allS1.filter(q => q.part === 'B');
+  const partC = allS1.filter(q => q.part === 'C');
+  
+  // Shuffle Part A and pick 30
+  const shuffledA = fisherYates([...partA]).slice(0, 30);
+  
+  // Group Part B by conversation_group_id
+  const bGroups: Record<string, any[]> = {};
+  partB.forEach(q => {
+    const gid = q.conversation_group_id;
+    if (!bGroups[gid]) bGroups[gid] = [];
+    bGroups[gid].push(q);
+  });
+  
+  // Pick 2 random B groups
+  const selectedBGroups = fisherYates(Object.values(bGroups)).slice(0, 2);
+  const selectedB = selectedBGroups.flatMap(group => 
+    group.sort((a,b) => a.question_order_in_group - b.question_order_in_group)
+  );
+
+  // Group Part C by conversation_group_id
+  const cGroups: Record<string, any[]> = {};
+  partC.forEach(q => {
+    const gid = q.conversation_group_id;
+    if (!cGroups[gid]) cGroups[gid] = [];
+    cGroups[gid].push(q);
+  });
+  
+  // Pick 3 random C groups
+  const selectedCGroups = fisherYates(Object.values(cGroups)).slice(0, 3);
+  const selectedC = selectedCGroups.flatMap(group => 
+    group.sort((a,b) => a.question_order_in_group - b.question_order_in_group)
+  );
+
+  // Final S1 array
+  const s1SelectedQuestions = [...shuffledA, ...selectedB, ...selectedC];
+  const s1OrderedIdsFinal = s1SelectedQuestions.map(q => q.id);
+  
+  // We must update the session with the correct S1 IDs
+  await supabase.from("test_sessions").update({ s1_question_ids: s1OrderedIdsFinal } as any).eq("id", session.id);
+
+  // Build audioGroups payload to send to client
+  // Since we already joined `audio_conversations(*)`, we can construct it directly
+  const audioGroupMap: Record<string, {
+    id: string; title: string; transcript: string; part: "A" | "B" | "C";
+    questions: any[];
+  }> = {};
+
+  for (const q of s1SelectedQuestions) {
+    const conv = q.audio_conversations;
+    if (!conv) continue;
+    if (!audioGroupMap[conv.id]) {
+      audioGroupMap[conv.id] = {
+        id: conv.id,
+        title: conv.title,
+        transcript: conv.transcript,
+        part: conv.section_part as "A" | "B" | "C",
+        questions: [],
+      };
+    }
+    audioGroupMap[conv.id].questions.push({
+      id: String(q.id),
+      questionText: String(q.question_text),
+      option_a: String(q.option_a),
+      option_b: String(q.option_b),
+      option_c: String(q.option_c),
+      option_d: String(q.option_d),
+    });
+  }
+
+  // Preserve ordering: A -> B -> C
+  const sortedAudioGroups = Object.values(audioGroupMap).sort((a,b) => {
+    if (a.part !== b.part) return a.part.localeCompare(b.part);
+    return 0; // The order within parts is already randomized via questions
+  });
+
   return NextResponse.json({
     sessionId: session.id,
     testType,
-    s1Questions: [] as Question[],
+    s1Questions: s1SelectedQuestions,
+    audioGroups: sortedAudioGroups,
     s2Questions: s2Ordered,
     s3Questions: s3Ordered,
     passages,

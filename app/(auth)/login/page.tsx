@@ -3,10 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Metadata } from "next";
 import { loginAction, googleOAuthAction } from "../actions";
-
-export const metadata: Metadata = { title: "Login" };
 
 /* ------------------------------------------------------------------
    GOOGLE ICON SVG

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ListeningQueueView, type AudioGroup } from "@/components/test/ListeningQueueView";
 import { SectionTimer } from "@/components/test/SectionTimer";
+import { HeadphonesIcon } from "@/components/ui/Icons";
 
 /**
  * Standalone Section 1 practice page — loads audio groups and runs
@@ -71,7 +72,7 @@ export default function ListeningPracticePage() {
   if (groups.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: "60px 24px", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
-        <p style={{ fontSize: "48px", marginBottom: "16px" }}>🎧</p>
+        <div style={{ marginBottom: "16px", color: "var(--color-text-muted)" }}><HeadphonesIcon size={48} /></div>
         <p style={{ fontSize: "var(--text-lg)", fontWeight: 600, color: "var(--color-text-primary)", marginBottom: "8px" }}>No audio tracks available yet</p>
         <p style={{ marginBottom: "24px" }}>Section 1 audio content will be added soon. Practice Sections 2 & 3 in the meantime.</p>
         <button onClick={() => router.push("/practice")} style={{ padding: "10px 24px", backgroundColor: "var(--color-primary-500)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", cursor: "pointer", fontFamily: "var(--font-ui)", fontWeight: 600 }}>
@@ -85,7 +86,7 @@ export default function ListeningPracticePage() {
   if (!started) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "70vh", gap: "24px", padding: "32px 24px", maxWidth: "560px", margin: "0 auto" }}>
-        <div style={{ fontSize: "64px" }}>🎧</div>
+        <div style={{ color: "#8b5cf6" }}><HeadphonesIcon size={64} /></div>
         <div style={{ textAlign: "center" }}>
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-2xl)", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "8px" }}>
             Section 1 — Listening
@@ -140,7 +141,7 @@ export default function ListeningPracticePage() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontFamily: "var(--font-ui)", fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", fontWeight: 600 }}>
-          🎧 Listening — Section 1
+          <HeadphonesIcon size={16} /> Listening — Section 1
         </span>
         <SectionTimer
           seconds={timeRemaining}

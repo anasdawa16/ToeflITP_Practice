@@ -18,13 +18,21 @@ export async function middleware(request: NextRequest) {
 
   const isOnboardingRoute = pathname.startsWith("/onboarding");
 
+  // Landing page at root — always public
+  const isLandingPage = pathname === "/";
+
   // Authenticated user on auth pages → redirect to dashboard
   if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Unauthenticated user on landing page → allow through
+  if (!user && isLandingPage) {
+    return supabaseResponse;
   }
 
   // Unauthenticated user accessing protected routes → redirect to login
-  if (!user && !isAuthRoute) {
+  if (!user && !isAuthRoute && !isLandingPage) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirectedFrom", pathname);
     return NextResponse.redirect(loginUrl);

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { TargetIcon, ClipboardIcon } from "@/components/ui/Icons";
 
 interface PastSession {
   id: string;
@@ -49,7 +50,7 @@ export default async function MockTestPage() {
         {/* Full mock */}
         <div style={{ padding: "28px", backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-xl)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, var(--color-primary-500), var(--color-primary-300))" }} />
-          <div style={{ fontSize: "36px", marginBottom: "16px" }}>📋</div>
+          <div style={{ marginBottom: "16px", color: "var(--color-primary-400)" }}><ClipboardIcon size={36} /></div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "8px" }}>
             Full Mock Test
           </h2>
@@ -58,7 +59,7 @@ export default async function MockTestPage() {
           </p>
           <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
             {["40 S2 questions", "Reading passages", "Scaled score"].map((tag) => (
-              <span key={tag} style={{ padding: "2px 10px", backgroundColor: "rgba(30,74,155,0.15)", border: "1px solid rgba(30,74,155,0.3)", borderRadius: "var(--radius-full)", color: "var(--color-primary-300)", fontSize: "var(--text-xs)", fontFamily: "var(--font-ui)", fontWeight: 600 }}>
+              <span key={tag} style={{ padding: "2px 10px", backgroundColor: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: "var(--radius-full)", color: "var(--color-primary-300)", fontSize: "var(--text-xs)", fontFamily: "var(--font-ui)", fontWeight: 600 }}>
                 {tag}
               </span>
             ))}
@@ -71,7 +72,7 @@ export default async function MockTestPage() {
         {/* Section practice */}
         <div style={{ padding: "28px", backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-xl)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", backgroundColor: "#7c3aed" }} />
-          <div style={{ fontSize: "36px", marginBottom: "16px" }}>🎯</div>
+          <div style={{ marginBottom: "16px", color: "#8b5cf6" }}><TargetIcon size={36} /></div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "8px" }}>
             Section Practice
           </h2>

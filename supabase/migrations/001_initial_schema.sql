@@ -249,6 +249,48 @@ CREATE TABLE IF NOT EXISTS user_vocabulary (
 );
 
 -- =============================================================
+-- DROP EXISTING POLICIES (TO AVOID DUP ERRORS)
+-- =============================================================
+DO $$
+BEGIN
+  -- profiles
+  DROP POLICY IF EXISTS "profiles_select_own"     ON profiles;
+  DROP POLICY IF EXISTS "profiles_insert_own"     ON profiles;
+  DROP POLICY IF EXISTS "profiles_update_own"     ON profiles;
+  -- test_sessions
+  DROP POLICY IF EXISTS "sessions_select_own"     ON test_sessions;
+  DROP POLICY IF EXISTS "sessions_insert_own"     ON test_sessions;
+  DROP POLICY IF EXISTS "sessions_update_own"     ON test_sessions;
+  -- user_answers
+  DROP POLICY IF EXISTS "answers_select_own"      ON user_answers;
+  DROP POLICY IF EXISTS "answers_insert_own"      ON user_answers;
+  -- user_progress
+  DROP POLICY IF EXISTS "progress_select_own"     ON user_progress;
+  DROP POLICY IF EXISTS "progress_all_own"        ON user_progress;
+  -- study_streaks
+  DROP POLICY IF EXISTS "streaks_all_own"         ON study_streaks;
+  -- bookmarks
+  DROP POLICY IF EXISTS "bookmarks_all_own"       ON bookmarks;
+  -- ai_conversations
+  DROP POLICY IF EXISTS "ai_conv_all_own"         ON ai_conversations;
+  -- leaderboard
+  DROP POLICY IF EXISTS "leaderboard_select_all"  ON leaderboard_weekly;
+  DROP POLICY IF EXISTS "leaderboard_write_own"   ON leaderboard_weekly;
+  -- vocabulary / user_vocabulary
+  DROP POLICY IF EXISTS "user_vocab_all_own"      ON user_vocabulary;
+  DROP POLICY IF EXISTS "vocabulary_public_read"  ON vocabulary;
+  DROP POLICY IF EXISTS "Public vocab read"        ON vocabulary;
+  -- questions / passages
+  DROP POLICY IF EXISTS "questions_public_read"   ON questions;
+  DROP POLICY IF EXISTS "passages_public_read"    ON passages;
+  -- audio
+  DROP POLICY IF EXISTS "audio_public_read"       ON audio_conversations;
+  -- achievements
+  DROP POLICY IF EXISTS "Users own achievements"  ON achievements;
+EXCEPTION WHEN OTHERS THEN NULL; -- ignore if tables don't exist yet
+END $$;
+
+-- =============================================================
 -- ROW LEVEL SECURITY (RLS)
 -- =============================================================
 
