@@ -37,13 +37,13 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
 
   return (
     <header
-      className="fixed top-0 right-0 left-0 md:left-[var(--sidebar-width)] z-30 h-[var(--topbar-height)] border-b border-[var(--color-border)] bg-[rgba(12,12,15,0.85)] backdrop-blur-md flex items-center justify-between gap-2 md:gap-4 px-4 md:px-6 transition-[left] duration-200"
+      className="fixed top-0 right-0 left-0 md:left-[var(--sidebar-width)] z-30 h-[var(--topbar-height)] border-b border-[var(--color-border)] bg-[rgba(12,12,15,0.85)] backdrop-blur-md flex items-center justify-between gap-2 md:gap-4 px-3 md:px-6 transition-[left] duration-200"
       style={{ "--sidebar-width": sidebarWidth } as React.CSSProperties}
     >
       {/* Left: Page breadcrumb / title area (slot for child pages to use) */}
       <div
         id="topbar-title"
-        className="flex-1 min-w-0 font-[var(--font-ui)] text-[var(--text-sm)] md:text-[var(--text-base)] font-semibold text-[var(--color-text-primary)] truncate pl-10 md:pl-0"
+        className="flex-1 min-w-0 font-[var(--font-ui)] text-[var(--text-sm)] md:text-[var(--text-base)] font-semibold text-[var(--color-text-primary)] truncate pl-12 md:pl-0"
       />
 
       {/* Right: Stats + Notifications + Avatar */}
