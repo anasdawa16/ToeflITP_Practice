@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginAction, googleOAuthAction } from "../actions";
@@ -95,9 +95,9 @@ function InputField({
 }
 
 /* ------------------------------------------------------------------
-   LOGIN PAGE
+   LOGIN FORM COMPONENT WITH SUSPENSE
    ------------------------------------------------------------------ */
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
@@ -337,5 +337,17 @@ export default function LoginPage() {
         </Link>
       </p>
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
+        Loading login...
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

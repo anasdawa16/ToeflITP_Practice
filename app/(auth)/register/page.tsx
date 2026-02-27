@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import Link from "next/link";
 import { registerAction, googleOAuthAction } from "../actions";
 
@@ -43,7 +43,7 @@ function InputField({
   );
 }
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -135,5 +135,17 @@ export default function RegisterPage() {
         </Link>
       </p>
     </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}>
+        Loading register...
+      </div>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 }
