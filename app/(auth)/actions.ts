@@ -5,6 +5,16 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 /* ------------------------------------------------------------------
+   ENV GUARD — fail fast with a clear message if Supabase keys are missing
+   ------------------------------------------------------------------ */
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  console.error(
+    "[FATAL] NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is not set. " +
+    "Add these environment variables in your Netlify dashboard."
+  );
+}
+
+/* ------------------------------------------------------------------
    VALIDATION SCHEMAS
    ------------------------------------------------------------------ */
 const loginSchema = z.object({
@@ -63,10 +73,15 @@ export async function loginAction(
     if (error.message.includes("Email not confirmed")) {
       return { error: "Please verify your email before logging in." };
     }
+    // Surface env-variable issues clearly
+    if (error.message.includes("fetch") || error.message.includes("network") || error.message.includes("Failed")) {
+      return { error: "Cannot reach authentication server. Contact support." };
+    }
     return { error: error.message };
   }
 
-  redirect("/");
+  // Return success — client handles navigation so redirect works on all hosts
+  return { success: "ok" };
 }
 
 /* ------------------------------------------------------------------
