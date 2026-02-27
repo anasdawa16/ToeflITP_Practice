@@ -3,13 +3,6 @@ import {
   Inter,
   JetBrains_Mono,
 } from "next/font/google";
-// Analytics only active on Vercel — safe-import to avoid Netlify crash
-const Analytics = process.env.VERCEL
-  ? require("@vercel/analytics/react").Analytics
-  : () => null;
-const SpeedInsights = process.env.VERCEL
-  ? require("@vercel/speed-insights/next").SpeedInsights
-  : () => null;
 import { ScrollRevealInit } from "@/components/ui/ScrollRevealInit";
 import "./globals.css";
 
@@ -107,8 +100,6 @@ export default function RootLayout({
       >
         {children}
         <ScrollRevealInit />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
