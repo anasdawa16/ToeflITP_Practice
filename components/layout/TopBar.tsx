@@ -37,13 +37,13 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
 
   return (
     <header
-      className="fixed top-0 right-0 z-30 h-[var(--topbar-height)] border-b border-[var(--color-border)] bg-[rgba(12,12,15,0.85)] backdrop-blur-md flex items-center justify-between gap-4 px-6 transition-[left] duration-200"
-      style={{ left: sidebarWidth }}
+      className="fixed top-0 right-0 left-0 md:left-[var(--sidebar-width)] z-30 h-[var(--topbar-height)] border-b border-[var(--color-border)] bg-[rgba(12,12,15,0.85)] backdrop-blur-md flex items-center justify-between gap-2 md:gap-4 px-4 md:px-6 transition-[left] duration-200"
+      style={{ "--sidebar-width": sidebarWidth } as React.CSSProperties}
     >
       {/* Left: Page breadcrumb / title area (slot for child pages to use) */}
       <div
         id="topbar-title"
-        className="flex-1 min-w-0 font-[var(--font-ui)] text-[var(--text-base)] font-semibold text-[var(--color-text-primary)]"
+        className="flex-1 min-w-0 font-[var(--font-ui)] text-[var(--text-sm)] md:text-[var(--text-base)] font-semibold text-[var(--color-text-primary)] truncate pl-10 md:pl-0"
       />
 
       {/* Right: Stats + Notifications + Avatar */}
@@ -51,7 +51,7 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
         {/* Streak pill */}
         {!isLoading && (profile?.study_streak ?? 0) > 0 && (
           <div
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.03)] text-[var(--color-text-secondary)] text-[var(--text-sm)] font-semibold font-[var(--font-ui)]"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.03)] text-[var(--color-text-secondary)] text-[var(--text-xs)] md:text-[var(--text-sm)] font-semibold font-[var(--font-ui)]"
             title={`${profile?.study_streak} day study streak`}
           >
             <span className="text-[var(--color-accent-300)]"><FlameIcon /></span>
@@ -86,12 +86,12 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
         )}
 
         {/* Divider */}
-        <div className="w-px h-7 bg-[var(--color-border)] mx-1" />
+        <div className="hidden sm:block w-px h-7 bg-[var(--color-border)] mx-1" />
 
         {/* Notification button */}
         <button
           type="button"
-          className="w-9 h-9 rounded-md border border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] flex items-center justify-center transition-colors hover:text-[var(--color-text-primary)] hover:border-[rgba(255,255,255,0.16)]"
+          className="w-8 h-8 md:w-9 md:h-9 rounded-md border border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] flex items-center justify-center transition-colors hover:text-[var(--color-text-primary)] hover:border-[rgba(255,255,255,0.16)]"
           aria-label="Notifications"
         >
           <BellIcon />
@@ -106,8 +106,8 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
           >
             <div
               style={{
-                width: "36px",
-                height: "36px",
+                width: "32px",
+                height: "32px",
                 borderRadius: "50%",
                 backgroundColor: "rgba(139, 92, 246, 0.15)",
                 border: "1px solid rgba(139, 92, 246, 0.25)",
@@ -135,7 +135,7 @@ export function TopBar({ profile, isLoading, sidebarWidth = "240px" }: TopBarPro
           type="button"
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="w-9 h-9 rounded-md border border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] flex items-center justify-center transition-colors hover:text-[#fca5a5] hover:border-[rgba(220,38,38,0.45)] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-8 h-8 md:w-9 md:h-9 rounded-md border border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] flex items-center justify-center transition-colors hover:text-[#fca5a5] hover:border-[rgba(220,38,38,0.45)] disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Sign out"
         >
           <LogOutIcon />
