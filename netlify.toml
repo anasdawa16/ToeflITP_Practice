@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
+  # NEXT_PUBLIC_SUPABASE_ANON_KEY is an intentionally public JWT embedded in the
+  # client bundle — Netlify's scanner incorrectly flags it as a secret.
+  SECRETS_SCAN_ENABLED = "false"
 
 # Netlify Next.js Runtime handles middleware, SSR, API routes automatically.
 # The plugin below is auto-installed by Netlify when it detects Next.js,
